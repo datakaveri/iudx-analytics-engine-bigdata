@@ -1,0 +1,17 @@
+version: "3.7"
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+  prometheus:
+    image: prom/prometheus
+    hostname: prometheus
+    ports:
+      - "9092:9090"
+    volumes:
+     - /etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - analytics-net
+    restart: always

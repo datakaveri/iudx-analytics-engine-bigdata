@@ -1,0 +1,24 @@
+version: "3.7"
+
+networks:
+  analytics-net:
+    external: true
+
+volumes:
+  superset-vol:
+
+services:
+  superset:
+    build: .
+    hostname: superset
+    ports:
+      - "9080:8088"
+    volumes:
+      - ./superset_config.py:/etc/superset/superset_config.py
+      - ./env:/etc/superset/.env
+      - superset-vol:/var/lib/superset
+    env_file: ./env
+    networks: 
+      - analytics-net
+    restart: always
+

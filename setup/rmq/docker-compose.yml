@@ -1,0 +1,19 @@
+version: '3.7'
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+
+  rmq:
+    image: rabbitmq:3-management
+    hostname: mockrmq
+    volumes:
+      - ./mock-rmq.json:/etc/rabbitmq/definitions.json
+    ports:
+      - 5672:5672
+      - 15672:15672
+    networks:
+      - analytics-net
+    restart: always

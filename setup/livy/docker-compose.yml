@@ -1,0 +1,20 @@
+version: '3'
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+
+  livy:
+    build: 
+      dockerfile: ./Dockerfile
+      context: .
+    container_name: livy
+    ports:
+      - 8998:8998
+    volumes:
+      - ../../codes:/src/livy/apache-livy-0.6.0-incubating-bin/codes
+    networks:
+      - analytics-net
+    restart: always
