@@ -1,0 +1,40 @@
+version: "3"
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+  kudu-master:
+    image: apache/kudu:latest
+    container_name: kudu-master
+    ports:
+      - "7051:7051"
+      - "8051:8051"
+    command: ["master"]
+    volumes:
+      - kudu-master:/var/lib/kudu
+    networks:
+      - analytics-net
+    environment:
+      - KUDU_MASTERS=kudu-master:7051
+    restart: always
+  kudu-tserver:
+    image: apache/kudu:latest
+    container_name: kudu-tserver
+    depends_on:
+      - kudu-master
+    ports:
+      - "7050:7050"
+      - "8050:8050"
+    command: ["tserver"]
+    volumes:
+      - kudu-tserver:/var/lib/kudu
+    networks:
+      - analytics-net
+    environment:
+      - KUDU_MASTERS=kudu-master:7051
+    restart: always
+volumes:
+  kudu-master:
+  kudu-tserver:

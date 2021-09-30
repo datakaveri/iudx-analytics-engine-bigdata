@@ -1,0 +1,24 @@
+version: "3.7"
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+  cadvisor:
+    image: gcr.io/cadvisor/cadvisor:v0.36.0
+    hostname: cadvisor
+    container_name: cadvisor
+    ports:
+      - "10084:8080"
+    volumes:
+     - /:/rootfs:ro
+     - /var/run:/var/run:ro
+     - /sys:/sys:ro
+     - /var/lib/docker/:/var/lib/docker:ro
+     - /dev/disk/:/dev/disk:ro
+    networks:
+      - analytics-net
+    devices:
+      - "/dev/kmsg"
+    restart: always

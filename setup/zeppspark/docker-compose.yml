@@ -1,0 +1,58 @@
+version: '3'
+
+networks:
+  analytics-net:
+    external: true
+
+services:
+  zeppspark:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    container_name: zeppspark
+    environment:
+      - SPARK_MODE=master
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    ports:
+      - '18080:8080'
+      - '17077:7077'
+    networks:
+      - analytics-net
+    restart: always
+  zeppspark-worker-1:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    container_name: zeppspark-worker-1
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://zeppspark:7077
+      - SPARK_WORKER_MEMORY=4G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    networks:
+      - analytics-net
+    restart: always
+  zeppspark-worker-2:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    container_name: zeppspark-worker-2
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://zeppspark:7077
+      - SPARK_WORKER_MEMORY=4G
+      - SPARK_WORKER_CORES=2
+      - SPARK_RPC_AUTHENTICATION_ENABLED=no
+      - SPARK_RPC_ENCRYPTION_ENABLED=no
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
+    networks:
+    - analytics-net
+    restart: always
