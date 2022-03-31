@@ -1,7 +1,15 @@
 # FLINK_PROPERTIES="jobmanager.rpc.address: jobmanager"
 
 FLINK_PROPERTIES="jobmanager.rpc.address: jobmanager
+jobmanager.memory.process.size: 4g
 taskmanager.numberOfTaskSlots: 3
+taskmanager.memory.task.heap.size: 1500m
+taskmanager.memory.managed.size: 1500m
+# taskmanager.memory.jvm-metaspace.size: 2g
+taskmanager.memory.flink.size: 4g
+taskmanager.memory.process.size: 6g
+#taskmanager.memory.jvm-overhead.min
+taskmanager.memory.jvm-overhead.max: 2g
 web.upload.dir: /opt/flink/jars
 
 state.backend: rocksdb
