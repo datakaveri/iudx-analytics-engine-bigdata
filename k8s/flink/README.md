@@ -16,12 +16,12 @@ mv flink-conf.yaml flink-1.14.4/conf/flink-conf.yaml
 ```
 - Start a session cluster.
 ```
-./bin/kubernetes-session.sh -Dkubernetes.cluster-id=flink-cluster -Dkubernetes.service-account=flink-service-account   -Dkubernetes.container.image=krithikvaidya/custom-flink:latest 
+./flink-1.14.4/bin/kubernetes-session.sh -Dkubernetes.cluster-id=flink-cluster -Dkubernetes.service-account=flink-service-account   -Dkubernetes.container.image=krithikvaidya/custom-flink:latest 
 ```
 - Running the above will automatically read *conf/flink-conf.yaml* and *~/.kube/config*
 - To submit an example job,
 ```
-./bin/flink run     --target kubernetes-session     -Dkubernetes.cluster-id=flink-cluster -Dkubernetes.service-account=flink-service-account     ./examples/streaming/TopSpeedWindowing.jar
+./flink-1.14.4/bin/flink run     --target kubernetes-session     -Dkubernetes.cluster-id=flink-cluster -Dkubernetes.service-account=flink-service-account     ./examples/streaming/TopSpeedWindowing.jar
 ```
 - With ```kubectl get svc```, you can get the LoadBalancer IP of the cluster and access the Flink web dashboard.
 - Increase/decrease the memory/CPU sizes of the jobmanagers and taskmanagers in the *flink-conf.yaml* as needed.
