@@ -10,7 +10,7 @@ wget https://dlcdn.apache.org/flink/flink-1.14.4/flink-1.14.4-bin-scala_2.12.tgz
 ```
 tar -xvzf flink-1.14.4-bin-scala_2.12.tgz
 ```
-- Move `flink-conf.yaml` to the subfolder `flink-1.14.4/conf`.
+- Move `flink-conf.yaml` to `flink-1.14.4/conf` directory.
 - Flink 1.14.3, with Python/PyFlink support enabled.
 - To run a session cluster, navigate to the Flink distribution folder (present at */home/ubuntu/analytics/flink-1.14.3* 
 on the bootstrap machine), and run
