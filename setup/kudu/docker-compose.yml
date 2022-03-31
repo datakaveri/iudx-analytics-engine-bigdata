@@ -15,9 +15,18 @@ services:
     volumes:
       - kudu-master:/var/lib/kudu
     networks:
-      - analytics-net
+          - analytics-net
     environment:
-      - KUDU_MASTERS=kudu-master:7051
+      - KUDU_MASTERS=kudu-master
+      - >
+        MASTER_ARGS=--fs_wal_dir=/var/lib/kudu/master
+        --rpc_bind_addresses=0.0.0.0:7051
+        --rpc_advertised_addresses=kudu-master:7051
+        --webserver_port=8051
+        --webserver_advertised_addresses=kudu-master:8051
+        --webserver_doc_root=/opt/kudu/www
+        --stderrthreshold=0
+        --use_hybrid_clock=false
     restart: always
   kudu-tserver:
     image: apache/kudu:latest
@@ -33,7 +42,16 @@ services:
     networks:
       - analytics-net
     environment:
-      - KUDU_MASTERS=kudu-master:7051
+    - KUDU_MASTERS=kudu-master
+    - >
+      TSERVER_ARGS=--fs_wal_dir=/var/lib/kudu/tserver
+      --rpc_bind_addresses=0.0.0.0:7050
+      --rpc_advertised_addresses=kudu-tserver:7050
+      --webserver_port=8050
+      --webserver_advertised_addresses=kudu-tserver:8050
+      --webserver_doc_root=/opt/kudu/www
+      --stderrthreshold=0
+      --use_hybrid_clock=false
     restart: always
 volumes:
   kudu-master:
