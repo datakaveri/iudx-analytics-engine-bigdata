@@ -1,0 +1,15 @@
+kubectl apply -f superset/superset-config.yaml
+kubectl apply -f superset/superset-deployment.yaml
+kubectl apply -f superset/superset-service.yaml
+
+kubectl apply -f postgres/postgres-deployment.yaml
+kubectl apply -f postgres/postgres-service.yaml
+
+kubectl apply -f redis/redis-deployment.yaml
+kubectl apply -f redis/redis-service.yaml
+
+sleep 5
+
+SUPERSET_POD=$(kubectl get pod | grep superset | awk '{print $1}')
+echo $SUPERSET_POD
+kubectl exec -it $SUPERSET_POD -- superset-init

@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: tserver-pvc
+  labels:
+    type: tserver-pvc
+
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "ebs-storage-class"
+  resources:
+    requests:
+      storage: 10Gi
+  selector:
+    matchLabels:
+      type: tserver-pv

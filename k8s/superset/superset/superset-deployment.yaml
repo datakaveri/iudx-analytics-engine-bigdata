@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset-deployment
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: superset
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      containers:
+        - name: superset
+          image: datakaveri/superset:latest
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: superset-config-volume
+              mountPath: /etc/superset/superset_config.py
+              subPath: superset_config.py
+            - name: superset-config-volume
+              mountPath: /polling.py
+              subPath: polling.py
+
+      volumes:
+        - name: superset-config-volume
+          configMap:
+            name: superset-configs

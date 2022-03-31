@@ -1,0 +1,49 @@
+---
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: trino-configs
+data:
+
+  log.properties: |-
+    io.trinosql=ERROR
+  
+  jvm.config: |-
+    -server
+    -Xmx16G
+    -XX:-UseBiasedLocking
+    -XX:+UseG1GC
+    -XX:G1HeapRegionSize=32M
+    -XX:+ExplicitGCInvokesConcurrent
+    -XX:+ExitOnOutOfMemoryError
+    -XX:+UseGCOverheadLimit
+    -XX:+HeapDumpOnOutOfMemoryError
+    -XX:ReservedCodeCacheSize=512M
+    -Djdk.attach.allowAttachSelf=true
+    -Djdk.nio.maxCachedBufferSize=2000000
+    -XX:-OmitStackTraceInFastThrow
+    -XX:PerMethodRecompilationCutoff=10000
+    -XX:PerBytecodeRecompilationCutoff=10000
+
+  config.properties.coordinator: |-
+    coordinator=true
+    node-scheduler.include-coordinator=true
+    http-server.http.port=8080
+    query.max-memory=50GB
+    query.max-memory-per-node=1GB
+    discovery.uri=http://localhost:8080
+
+  config.properties.worker: |-
+    coordinator=false
+    query.max-memory=50GB
+    query.max-memory-per-node=1GB
+    http-server.http.port=8080
+    discovery.uri=http://trino:8080
+
+  node.properties: |-
+    node.environment=production
+    node.id=59d15001-84aa-4784-b283-f9ebbd5b5056
+
+  kudu.properties: |-
+    connector.name=kudu
+    kudu.client.master-addresses=kudu-master:7051

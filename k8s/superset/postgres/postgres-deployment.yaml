@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+  namespace: default
+  labels:
+    app: postgres
+spec:
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres
+          imagePullPolicy: IfNotPresent
+          # ports:
+            # - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: superset
+            - name: POSTGRES_PASSWORD
+              value: superset
+            - name: POSTGRES_USER
+              value: superset
+          volumeMounts:
+            - name: postgres-volume
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-volume
+          emptyDir: {}

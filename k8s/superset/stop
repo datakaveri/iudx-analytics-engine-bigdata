@@ -1,0 +1,10 @@
+kubectl delete -f superset/superset-config.yaml
+kubectl delete -f superset/superset-deployment.yaml
+kubectl delete -f superset/superset-service.yaml
+
+kubectl delete -f postgres/postgres-deployment.yaml
+kubectl delete -f postgres/postgres-service.yaml
+
+kubectl delete -f redis/redis-deployment.yaml
+kubectl delete -f redis/redis-service.yaml
+

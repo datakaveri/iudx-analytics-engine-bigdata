@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: tserver-pv
+  labels:
+    type: tserver-pv
+spec:
+  capacity:
+    storage: 10Gi
+  storageClassName: "ebs-storage-class"
+  accessModes:
+    - ReadWriteMany
+  awsElasticBlockStore:
+        volumeID: "vol-0d7451ab6f79c913d"
+        fsType: ext4

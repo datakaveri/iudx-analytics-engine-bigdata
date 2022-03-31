@@ -1,0 +1,68 @@
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: superset-configs
+
+data:
+  superset_config.py: |-
+    import os
+    MAPBOX_API_KEY = os.getenv('MAPBOX_API_KEY', '')
+    CACHE_CONFIG = {
+        'CACHE_TYPE': 'redis',
+        'CACHE_DEFAULT_TIMEOUT': 300,
+        'CACHE_KEY_PREFIX': 'superset_',
+        'CACHE_REDIS_HOST': 'redis',
+        'CACHE_REDIS_PORT': 6379,
+        'CACHE_REDIS_DB': 1,
+        'CACHE_REDIS_URL': 'redis://redis:6379/1'}
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://superset:superset@postgressvc:5432/superset'
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
+    SECRET_KEY = 'thisISaSECRET_1234'
+
+  polling.py: |-
+    
+    import polling2
+    import psycopg2
+    from datetime import datetime
+    import requests
+    import json
+
+    def get_last_login():
+        conn = psycopg2.connect(dbname="superset", user="superset", password="superset", host="postgressvc", port=5432)
+        cur = conn.cursor()
+        cur.execute('SELECT * from public.ab_user')
+        user_records = cur.fetchall()
+        current_datetime = datetime.now()
+        logged_in_users=0
+
+        for i in user_records:
+            if(i[7] is None):
+                delta = 9999
+            else:
+                delta = (current_datetime - i[7]).total_seconds()
+            if(delta<3600):
+                logged_in_users+=1
+
+        replica_resp = requests.get("http://scalersvc:8080/replicas/list")
+        if(logged_in_users==0):
+            deployment_resp = requests.post("http://scalersvc:8080/deployment/delete")
+            print(deployment_resp)
+        elif(logged_in_users == 1):
+            if("trino-worker" not in replica_resp.json()['response'].keys() and "trino-coordinator" not in replica_resp.json()['response'].keys()):
+                deployment_resp = requests.post("http://scalersvc:8080/deployment/create")
+                print(deployment_resp)
+            elif(replica_resp.json()['response']["trino-worker"]!=2):
+                headers = {"Content-Type": "application/json"}
+                deployment_resp = requests.post("http://scalersvc:8080/deployment/scale", headers=headers,data = json.dumps({"replicas": 2}))
+                print(deployment_resp)
+        else:
+            if("trino-worker" not in replica_resp.json()['response'].keys() and "trino-coordinator" not in replica_resp.json()['response'].keys()):
+                deployment_resp = requests.post("http://scalersvc:8080/deployment/create")
+                headers = {"Content-Type": "application/json"}
+                deployment_resp = requests.post("http://scalersvc:8080/deployment/scale", headers=headers,data = json.dumps({"replicas": logged_in_users+1}))
+                print(deployment_resp)
+            elif(replica_resp.json()['response']["trino-worker"]!=logged_in_users+1):
+                headers = {"Content-Type": "application/json"}
+                deployment_resp = requests.post("http://scalersvc:8080/deployment/scale", headers=headers,data = json.dumps({"replicas": logged_in_users+1}))
+                print(deployment_resp)
+    polling2.poll(lambda: get_last_login(),step=30,poll_forever=True,ignore_exceptions=(IOError,))

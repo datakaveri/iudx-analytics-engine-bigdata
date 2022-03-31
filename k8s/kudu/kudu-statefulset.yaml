@@ -1,0 +1,141 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kudu-master
+  namespace: apache-kudu
+  labels:
+    app: kudu-master
+spec:
+  serviceName: kudu-masters
+  podManagementPolicy: "Parallel"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kudu-master
+  template:
+    metadata:
+      labels:
+        app: kudu-master
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+      volumes:
+        - name: master-vol
+          persistentVolumeClaim:
+            claimName: master-pvc
+      containers:
+        - name: kudu-master
+          image: apache/kudu
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUDU_MASTERS
+              value: "kudu-master-0.kudu-masters.apache-kudu.svc.cluster.local"
+          args: ["master"]
+          ports:
+            - containerPort: 8051
+              name: master-ui
+            - containerPort: 7051
+              name: master-rpc
+          volumeMounts:
+            - name: master-vol
+              mountPath: /var/lib/
+              subPath: kudu
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - kudu-master
+                topologyKey: kubernetes.io/hostname
+  updateStrategy:
+    type: RollingUpdate
+
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kudu-tserver
+  namespace: apache-kudu
+  labels:
+    app: kudu-tserver
+spec:
+  serviceName: kudu-tservers
+  podManagementPolicy: "Parallel"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kudu-tserver
+  template:
+    metadata:
+      labels:
+        app: kudu-tserver
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 3000
+        fsGroup: 2000
+      volumes:
+        - name: tserver-vol
+          persistentVolumeClaim:
+            claimName: tserver-pvc
+      containers:
+        - name: kudu-tserver
+          image: apache/kudu
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: GET_HOSTS_FROM
+              value: dns
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: KUDU_MASTERS
+              value: "kudu-master-0.kudu-masters.apache-kudu.svc.cluster.local"
+          args: ["tserver"]
+          ports:
+            - containerPort: 8050
+              name: tserver-ui
+            - containerPort: 7050
+              name: tserver-rpc
+          volumeMounts:
+            - name: tserver-vol
+              mountPath: /var/lib/
+              subPath: kudu
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app
+                      operator: In
+                      values:
+                        - kudu-tserver
+                topologyKey: kubernetes.io/hostname
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # partition option will be useful for staging update scenario,
+      partition: 0

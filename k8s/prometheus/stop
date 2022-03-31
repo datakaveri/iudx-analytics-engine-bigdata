@@ -1,0 +1,5 @@
+kubectl delete -f namespace.yaml
+kubectl delete -f clusterRole.yaml --namespace monitoring
+kubectl delete -f config.yaml --namespace monitoring
+kubectl delete -f prometheus-deployment.yaml --namespace monitoring
+kubectl delete -f prometheus-service.yaml --namespace monitoring

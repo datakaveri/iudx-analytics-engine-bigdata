@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-worker
+  namespace: monitoring
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: trino-worker
+  template:
+    metadata:
+      labels:
+        app: trino-worker
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: trino-worker
+          image: "trinodb/trino:latest"
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/jvm.config
+              subPath: jvm.config
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/config.properties
+              subPath: config.properties.worker
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/node.properties
+              subPath: node.properties
+            - name: trino-cfg-vol
+              mountPath: /etc/trino/catalog/kudu.properties
+              subPath: kudu.properties
+      volumes:
+        - name: trino-cfg-vol
+          configMap:
+            name: trino-configs

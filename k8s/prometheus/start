@@ -1,0 +1,5 @@
+kubectl apply -f namespace.yaml
+kubectl apply -f clusterRole.yaml --namespace monitoring
+kubectl apply -f config.yaml --namespace monitoring
+kubectl apply -f prometheus-deployment.yaml --namespace monitoring
+kubectl apply -f prometheus-service.yaml --namespace monitoring

@@ -1,0 +1,7 @@
+Flask
+psycopg2
+urllib3
+polling2
+flask-cors
+kubernetes
+gunicorn

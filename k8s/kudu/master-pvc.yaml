@@ -1,0 +1,17 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: master-pvc
+  labels:
+    type: master-pvc
+
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: "ebs-storage-class"
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      type: master-pv
