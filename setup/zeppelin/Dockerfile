@@ -16,4 +16,4 @@ RUN apt-get -y install gcc \
     && ./configure && make && make install
 
 RUN pip3.6 install --upgrade pip
-RUN pip3.6 install  numpy scipy matplotlib ipython jupyter pandas sympy nose pyarrow sklearn h3
+RUN pip3.6 install  numpy scipy matplotlib ipython jupyter pandas sympy nose pyarrow sklearn h3 geopandas h3pandas
