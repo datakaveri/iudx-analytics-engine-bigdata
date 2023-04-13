@@ -7,7 +7,7 @@ apache-airflow-providers-amazon==2.0.0
 apache-airflow-providers-apache-spark==2.0.0
 apache-airflow-providers-celery==2.0.0
 apache-airflow-providers-cncf-kubernetes==2.0.0
-apache-airflow-providers-docker==2.0.0
+apache-airflow-providers-docker==3.0.0
 apache-airflow-providers-elasticsearch==2.0.1
 apache-airflow-providers-ftp==2.0.0
 apache-airflow-providers-google==4.0.0
