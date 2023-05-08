@@ -2,7 +2,7 @@ adal==1.2.7
 alembic==1.6.5
 amqp==2.6.1
 anyio==3.2.0
-apache-airflow==2.1.1
+apache-airflow==2.6.0
 apache-airflow-providers-amazon==2.0.0
 apache-airflow-providers-apache-spark==2.0.0
 apache-airflow-providers-celery==2.0.0
