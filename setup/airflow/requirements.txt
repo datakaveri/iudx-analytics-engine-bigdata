@@ -238,7 +238,7 @@ pytz==2021.1
 pytzdata==2020.1
 PyYAML==5.4.1
 redis==3.5.3
-requests==2.25.1
+requests==2.31.0
 requests-oauthlib==1.1.0
 rfc3986==1.5.0
 rich==10.4.0
