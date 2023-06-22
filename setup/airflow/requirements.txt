@@ -92,7 +92,7 @@ eventlet==0.31.0
 filelock==3.0.12
 Fiona==1.8.20
 Flask==1.1.4
-Flask-AppBuilder==3.3.1
+Flask-AppBuilder==4.3.2
 Flask-Babel==1.0.0
 Flask-Caching==1.10.1
 Flask-JWT-Extended==3.25.1
